@@ -10,11 +10,11 @@ class HomePage extends StatelessWidget {
       ),
       body: Center(
         child: ElevatedButton(
-          child: Text('结账'),
+          child: Text('小計'),
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => DetailPage()),
+              MaterialPageRoute(builder: (context) => SubtotalPage()),
             );
           },
         ),

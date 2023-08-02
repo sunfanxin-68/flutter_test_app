@@ -1,106 +1,215 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:math';
 import 'package:test_app/app/ui/page/detail/controller/right_section_controller.dart';
 import 'package:test_app/app/ui/page/detail/component/promotion_item.dart';
 import 'package:test_app/app/ui/page/detail/component/payment_method_item.dart';
 import 'package:test_app/app/ui/page/detail/component/machine_item.dart';
 
 class RightSection extends StatelessWidget {
-  final controller = Get.put(RightSectionController());
+  final RightSectionController controller = Get.put(RightSectionController());
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.5,
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Obx(() {
-  final screenWidth = MediaQuery.of(context).size.width * 0.5;
-  final itemWidth = (screenWidth - 100) / 3; // subtracting total padding (10*4)
-  final totalPromotions = controller.promotions.length;
-  final displayPromotionsCount = controller.showMorePromotions.value ? totalPromotions : min(3, totalPromotions);
-  return Column(
-    children: <Widget>[
-      for (var i = 0; i < displayPromotionsCount; i += 3)
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10.0), // space between the rows
-          child: Row(
-            children: <Widget>[
-              if (i < displayPromotionsCount) ...[
-                PromotionItem(
-                  title: controller.promotions[i]["title"] ?? '',
-                  onTap: controller.toggleShowMorePromotions,
-                  width: itemWidth,
-                ),
-                SizedBox(width: 10), // space between the boxes
-              ],
-              if (i + 1 < displayPromotionsCount) ...[
-                PromotionItem(
-                  title: controller.promotions[i+1]["title"] ?? '',
-                  onTap: controller.toggleShowMorePromotions,
-                  width: itemWidth,
-                ),
-                SizedBox(width: 10), // space between the boxes
-              ],
-              if (i + 2 < displayPromotionsCount)
-                PromotionItem(
-                  title: controller.promotions[i+2]["title"] ?? '',
-                  onTap: controller.toggleShowMorePromotions,
-                  width: itemWidth,
-                ),
-            ],
-          ),
-        ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+    return Obx(() {
+      return Flex(
+        direction: Axis.vertical,
         children: <Widget>[
-          IconButton(
-            onPressed: controller.toggleShowMorePromotions,
-            icon: Icon(
-              controller.showMorePromotions.value
-                  ? Icons.expand_less
-                  : Icons.expand_more,
+          Padding(
+            padding: const EdgeInsets.only(top: 0, bottom: 10.0, right: 30),
+            child: Flex(
+              direction: Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                for (var i = 0; i < 2; i++) // 只循环前两个项目
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: PromotionItem(
+                      title: controller.promotions[i]['title'] ?? '',
+                      onTap: () => controller.gotoDiscountPage(),
+                      width: 110,
+                      height: 70,
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(219, 231, 252, 1),
+                        borderRadius: BorderRadius.circular(5.0),
+                        border: Border.all(
+                          color: Color.fromRGBO(149, 162, 203, 1.0),
+                          width: 1.0,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 3,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: GestureDetector(
+                    onTap: () => controller.gotoDiscountPage(),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(5.0),
+                          bottomLeft: Radius.circular(5.0),
+                        ),
+                      ),
+                      width: 220, // 宽度220
+                      height: 70,
+                      child: Flex(
+                        direction: Axis.horizontal,
+
+                        // 创建一个行布局，包含两个项目
+                        children: [
+                          _buildPromotionItem(2), // 第三个项目
+                          _buildPromotionItem(3), // 第四个项目
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  color: const Color.fromRGBO(219, 231, 252, 1),
+                  width: 50,
+                  height: 70,
+                  child: IconButton(
+                    onPressed: () => controller.gotoDiscountPage(),
+                    icon: Icon(Icons.expand_more, color: Colors.blueAccent),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
-    ],
-  );
-}),
-            SizedBox(height: 16.0),
-            Obx(() => ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: 200.0), // 这个值设置为你想要的高度
-                  child: GridView.count(
-                    shrinkWrap: true,
-                    crossAxisCount: 4,
-                    childAspectRatio: 1, // 这个值设置为 1 可以保证网格中的每个子项是一个正方形
-                    mainAxisSpacing: 10, // 主轴间距，可调整为你想要的值
-                    crossAxisSpacing: 10, // 横轴间距，可调整为你想要的值
-                    children: controller.paymentMethods
-                        .map((method) => Padding(
-                              padding: const EdgeInsets.all(8.0), // 设置每个项目的边距
-                              child: PaymentMethodItem(
-                                title: method["title"] ?? '',
-                                imageUrl: method["imageUrl"] ?? '',
+
+          ///支払い方法一覧
+          Flex(
+            direction: Axis.vertical,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 10.0, right: 0.0),
+                child: Card(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.45,
+                    child: Flex(
+                      direction: Axis.vertical,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20.0),
+                          child: Obx(
+                            () => Container(
+                              height: 335, // 设置固定高度
+                              child: Stack(
+                                children: [
+                                  // 右侧显示滚动滑轮
+                                  Scrollbar(
+                                    thumbVisibility: true,
+                                    thickness: 20.0,
+                                    child: GridView.count(
+                                      padding: const EdgeInsets.all(10.0),
+                                      // 设置间隔
+                                      shrinkWrap: true,
+                                      crossAxisCount: 4,
+                                      childAspectRatio: 1,
+                                      mainAxisSpacing: 10,
+                                      crossAxisSpacing: 10,
+                                      children: controller.paymentMethods
+                                          .map((method) => Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                child: PaymentMethodItem(
+                                                  title: method["title"] ?? '',
+                                                  icon: controller.icons[
+                                                          method["icon"]] ??
+                                                      Icons.error,
+                                                  onTap: () {
+                                                    controller
+                                                        .gotoDiscountPage();
+                                                  },
+                                                ),
+                                              ))
+                                          .toList(),
+                                    ),
+                                  ),
+                                  // 底部渐变效果
+                                  Positioned(
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: Container(
+                                      height: 40, // 渐变效果的高度
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.bottomCenter,
+                                          end: Alignment.topCenter,
+                                          colors: [
+                                            Colors.grey.withOpacity(0.3),
+                                            // 底部30%透明度
+                                            Colors.grey.withOpacity(0.0),
+                                            // 顶部0%透明度
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ))
-                        .toList(),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: 55.0), // 这里设置了15px的间隙
+                        ///精算機一覧
+                        Container(
+                          margin: const EdgeInsets.only(top: 0.0),
+                          width: MediaQuery.of(context).size.width * 0.45,
+                          height: 150,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Obx(
+                              () => Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: controller.machines
+                                    .map(
+                                      (machine) => Expanded(
+                                        child: MachineItem(
+                                          width: 110, // 你可以根据需要调整这些参数
+                                          height: 110,
+                                          title: machine["title"] ?? '',
+                                          status: machine["status"] ?? '',
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                )),
-            SizedBox(height: 16.0),
-            Obx(() => Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: controller.machines
-                      .map((machine) => MachineItem(
-                            title: machine["title"] ?? '',
-                            status: machine["status"] ?? '',
-                          ))
-                      .toList(),
-                )),
-          ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    });
+  }
+
+  Widget _buildPromotionItem(int index) {
+    return Expanded(
+      child: Center(
+        child: Text(
+          controller.promotions[index]['title'] ?? '',
+          style: const TextStyle(
+            fontSize: 18,
+            color: Color.fromRGBO(69, 73, 78, 1),
+          ),
         ),
       ),
     );
