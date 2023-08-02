@@ -25,6 +25,7 @@ class CouponItem extends StatelessWidget {
             direction: Axis.horizontal,
             children: [
               Expanded(
+                flex: 3, // 设置 title 占据更多的空间
                 child: Text(
                   title,
                   style: TextStyle(
@@ -34,52 +35,58 @@ class CouponItem extends StatelessWidget {
                 ),
               ),
               Expanded(
+                flex: 4, // 你可以调整这些 flex 值以达到所需的分配比例
                 child: Flex(
                   direction: Axis.horizontal,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
-                      amount,
-                      style: TextStyle(
-                        fontSize: 28,
-                        color: Color.fromRGBO(69, 73, 78, 1),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        amount,
+                        style: TextStyle(
+                          fontSize: 28,
+                          color: Color.fromRGBO(69, 73, 78, 1),
+                        ),
+                        textAlign: TextAlign.right,
                       ),
-                      textAlign: TextAlign.right,
                     ),
-                    SizedBox(width: 20),  // 设置 amount 与 count 之间的间距
-                    Text(
-                      count,
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Color.fromRGBO(69, 73, 78, 1),
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        count,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color.fromRGBO(69, 73, 78, 1),
+                        ),
+                        textAlign: TextAlign.right,
                       ),
-                      textAlign: TextAlign.right,
                     ),
-                    SizedBox(width: 10),  // 设置 count 与 IconButton 之间的间距
-                    IconButton(
-                      icon: Icon(Icons.chevron_right),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          barrierDismissible: true, // 设置点击对话框外部关闭对话框
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-
-                              content: Text(title),
-                            );
-                          },
-                        );
-                      },
-                    )
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                        icon: Icon(Icons.chevron_right),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            barrierDismissible: true, // 设置点击对话框外部关闭对话框
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: Text(title),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
-
             ],
           ),
         ),
       ),
-
     );
   }
+
 }

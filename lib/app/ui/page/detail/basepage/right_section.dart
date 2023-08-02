@@ -90,10 +90,11 @@ class RightSection extends StatelessWidget {
             direction: Axis.vertical,
             children: [
               Padding(
-                padding: EdgeInsets.only(top: 10.0, right: 0.0),
+                padding: EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0),
                 child: Card(
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 0.45,
+                   // width: MediaQuery.of(context).size.width * 0.45,
+                    width: double.infinity,
                     child: Flex(
                       direction: Axis.vertical,
                       children: [
@@ -101,7 +102,7 @@ class RightSection extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 20.0),
                           child: Obx(
                             () => Container(
-                              height: 335, // 设置固定高度
+                              height: 335, // 设置固定高
                               child: Stack(
                                 children: [
                                   // 右侧显示滚动滑轮
@@ -109,7 +110,7 @@ class RightSection extends StatelessWidget {
                                     thumbVisibility: true,
                                     thickness: 20.0,
                                     child: GridView.count(
-                                      padding: const EdgeInsets.all(10.0),
+                                      padding: const EdgeInsets.all(25.0),
                                       // 设置间隔
                                       shrinkWrap: true,
                                       crossAxisCount: 4,
@@ -165,7 +166,7 @@ class RightSection extends StatelessWidget {
                         ///精算機一覧
                         Container(
                           margin: const EdgeInsets.only(top: 0.0),
-                          width: MediaQuery.of(context).size.width * 0.45,
+                          width: MediaQuery.of(context).size.width * 0.5,
                           height: 150,
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),

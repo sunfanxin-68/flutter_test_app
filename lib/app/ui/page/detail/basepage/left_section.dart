@@ -22,6 +22,7 @@ class SubTabWidget extends StatelessWidget {
           topRight: Radius.circular(10),
         ),
       ),
+
       child: Flex(
         direction: Axis.vertical,
         children: [
@@ -33,7 +34,7 @@ class SubTabWidget extends StatelessWidget {
                   ' ${controller.registerNumber.value}',
                   style: TextStyle(
                     fontSize: 18,
-                    color: Color.fromRGBO(69, 73, 78, 1),
+                    color: Color(0xFF45494E),
                   ),
                 ),
               ),
@@ -65,13 +66,13 @@ class LeftSection extends StatelessWidget {
               direction: Axis.vertical,
               children: [
                 Obx(() => Padding(
-                      padding: const EdgeInsets.only(top: 27.0, right: 20),
+                      padding: EdgeInsets.only(top: 27.0, right: 20),
                       // 设置距离顶部的间距
                       child: Flex(
                         direction: Axis.horizontal, // 设置方向为水平
                         mainAxisAlignment: MainAxisAlignment.end, // 从右到左排列
                         children: [
-                          const Text(
+                          Text(
                             '値引き合計',
                             style: TextStyle(
                               color: Color.fromRGBO(193, 55, 30, 1),
@@ -80,7 +81,7 @@ class LeftSection extends StatelessWidget {
                           ),
                           Text(
                             '　${controller.discountAmount.value}',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Color.fromRGBO(193, 55, 30, 1),
                               fontSize: 28,
                             ),
@@ -88,7 +89,7 @@ class LeftSection extends StatelessWidget {
                         ],
                       ),
                     )),
-                SizedBox(height: 66.0),
+                SizedBox(height: 40.0),
                 Obx(
                   () => Flex(
                     direction: Axis.horizontal,
@@ -103,7 +104,7 @@ class LeftSection extends StatelessWidget {
                               const Text(
                                 '合計',
                                 style: TextStyle(
-                                  color: Color.fromRGBO(69, 73, 78, 1),
+                                  color: Color(0xFF45494E),
                                   fontSize: 22,
                                 ),
                               ),
@@ -116,7 +117,7 @@ class LeftSection extends StatelessWidget {
                                       child: Text(
                                         '${controller.totalItems.value} 点',
                                         style: TextStyle(
-                                          color: Color.fromRGBO(69, 73, 78, 1),
+                                          color: Color(0xFF45494E),
                                           fontSize: 28,
                                         ),
                                       ),
@@ -130,8 +131,7 @@ class LeftSection extends StatelessWidget {
                                         child: Text(
                                           '${controller.totalAmount.value}',
                                           style: TextStyle(
-                                            color:
-                                                Color.fromRGBO(69, 73, 78, 1),
+                                            color: Color(0xFF45494E),
                                             fontSize: 34,
                                           ),
                                           textAlign: TextAlign.right,
@@ -149,16 +149,16 @@ class LeftSection extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
                   // 左右边距为10
                   child: Divider(color: Colors.grey, thickness: 2.0),
                 ),
-                SizedBox(height: 36.0),
+                SizedBox(height: 15.0),
                 Obx(
                   () => Flex(
                     direction: Axis.horizontal,
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Padding(
                           padding: EdgeInsets.only(left: 20), // 左边距为20
                           child: Text(
@@ -177,8 +177,8 @@ class LeftSection extends StatelessWidget {
                             padding: EdgeInsets.only(right: 20), // 右边距为20
                             child: Text(
                               '${controller.receivedAmount.value}',
-                              style: const TextStyle(
-                                color: Color.fromRGBO(69, 73, 78, 1),
+                              style: TextStyle(
+                                color: Color(0xFF45494E),
                                 fontSize: 44,
                               ),
                             ),
@@ -188,7 +188,7 @@ class LeftSection extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 15.0),
                 Obx(
                   () => Container(
                     color: Color.fromRGBO(255, 232, 229, 1),
@@ -231,20 +231,22 @@ class LeftSection extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 15.0),
-                Container(
-                  // 用 Container 给 ListView.builder 设定一个高度
-                  height: 200, // 可以根据你的实际需要调整
-                  child: Obx(
-                    () => ListView.builder(
-                      itemCount: controller.coupons.length,
-                      itemBuilder: (context, index) => CouponItem(
-                        title: controller.coupons[index]['title'] ?? '',
-                        amount: controller.coupons[index]['amount'] ?? '',
-                        count: controller.coupons[index]['count'] ?? '',
+
+                  Container(
+                    // 用 Container 给 ListView.builder 设定一个高度
+                    height: 180, // 可以根据你的实际需要调整
+                    child: Obx(
+                      () => ListView.builder(
+                        itemCount: controller.coupons.length,
+                        itemBuilder: (context, index) => CouponItem(
+                          title: controller.coupons[index]['title'] ?? '',
+                          amount: controller.coupons[index]['amount'] ?? '',
+                          count: controller.coupons[index]['count'] ?? '',
+                        ),
                       ),
                     ),
                   ),
-                ),
+
               ],
             ),
           ),

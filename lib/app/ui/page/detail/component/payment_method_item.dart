@@ -53,7 +53,7 @@ class PaymentMethodItem extends StatelessWidget {
                     title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 15,
                       color: Color(0xFF45494E), // 设置文本颜色
                     ),
                   ),

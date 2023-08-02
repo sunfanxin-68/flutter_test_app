@@ -5,36 +5,38 @@ import 'package:test_app/app/ui/page/detail/basepage/right_section.dart';
 class SubtotalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    double availableHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Color(0xFFDCDCDC),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(5.0),
-          child: SingleChildScrollView(
-            child:Flex(
-              direction: Axis.vertical,
-              children: <Widget>[
-                SizedBox(height: 200.0),
-                Flex(
-                  direction: Axis.horizontal, // 横向布局
+          child: Flex(
+            direction: Axis.vertical,
+            children: <Widget>[
+              SizedBox(height: 20.0),
+              Expanded( // 使用Expanded来占据可用空间
+                child: Flex(
+                  direction: Axis.horizontal,
                   children: <Widget>[
                     Expanded(
                       child: Flex(
-                        direction: Axis.vertical, // 列表布局
+                        direction: Axis.vertical,
                         children: <Widget>[
                           Flex(
-                            direction: Axis.horizontal, // 横向布局
+                            direction: Axis.horizontal,
                             children: [
                               Expanded(
-                                child: Container(),  // 这是一个空的 Expanded widget，占据了左边的空间
-                                flex: 2,  // 设置 flex 为 3
+                                child: Container(),
+                                flex: 2,
                               ),
                               Expanded(
                                 child: FittedBox(
-                                  child: SubTabWidget(), // 这里使用 FittedBox 包裹了 TabWidget
-                                  fit: BoxFit.contain, // 设置 FittedBox 的 fit 属性
+                                  child: SubTabWidget(),
+                                  fit: BoxFit.contain,
                                 ),
-                                flex: 1,  // 设置 flex 为 1
+                                flex: 1,
                               ),
                             ],
                           ),
@@ -47,15 +49,11 @@ class SubtotalPage extends StatelessWidget {
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
-
-
-
-
