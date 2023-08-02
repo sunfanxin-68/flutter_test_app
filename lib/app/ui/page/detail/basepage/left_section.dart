@@ -22,7 +22,6 @@ class SubTabWidget extends StatelessWidget {
           topRight: Radius.circular(10),
         ),
       ),
-
       child: Flex(
         direction: Axis.vertical,
         children: [
@@ -53,6 +52,7 @@ class SubTabWidget extends StatelessWidget {
 
 class LeftSection extends StatelessWidget {
   final controller = Get.put(LeftSectionController());
+  final ScrollController _controller = ScrollController();
 
   Widget build(BuildContext context) {
     return Padding(
@@ -89,7 +89,7 @@ class LeftSection extends StatelessWidget {
                         ],
                       ),
                     )),
-                SizedBox(height: 40.0),
+                SizedBox(height: 50.0),
                 Obx(
                   () => Flex(
                     direction: Axis.horizontal,
@@ -231,12 +231,13 @@ class LeftSection extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 15.0),
-
-                  Container(
-                    // 用 Container 给 ListView.builder 设定一个高度
-                    height: 180, // 可以根据你的实际需要调整
+                Container(
+                  height: 180,
+                  child: Scrollbar(
+                    controller: _controller, // 将控制器传递给 Scrollbar
                     child: Obx(
                       () => ListView.builder(
+                        controller: _controller, // 将控制器传递给 ListView.builder
                         itemCount: controller.coupons.length,
                         itemBuilder: (context, index) => CouponItem(
                           title: controller.coupons[index]['title'] ?? '',
@@ -246,7 +247,7 @@ class LeftSection extends StatelessWidget {
                       ),
                     ),
                   ),
-
+                )
               ],
             ),
           ),

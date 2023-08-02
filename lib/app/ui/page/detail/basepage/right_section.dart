@@ -7,6 +7,7 @@ import 'package:test_app/app/ui/page/detail/component/machine_item.dart';
 
 class RightSection extends StatelessWidget {
   final RightSectionController controller = Get.put(RightSectionController());
+  final ScrollController _controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -107,9 +108,11 @@ class RightSection extends StatelessWidget {
                                 children: [
                                   // 右侧显示滚动滑轮
                                   Scrollbar(
+                                    controller: _controller,
                                     thumbVisibility: true,
                                     thickness: 20.0,
                                     child: GridView.count(
+                                      controller: _controller,
                                       padding: const EdgeInsets.all(25.0),
                                       // 设置间隔
                                       shrinkWrap: true,
