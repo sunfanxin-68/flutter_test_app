@@ -40,11 +40,11 @@ class MachineItem extends StatelessWidget {
                   topLeft: Radius.circular(5),
                   topRight: Radius.circular(5),
                 ),
-                border: Border.all(color: Color(0xff374bba50), width: 1),
+                border: Border.all(color: Color.fromRGBO(55, 75, 186, 0.5), width: 1),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.5), // 调整阴影透明度
-                    spreadRadius: 2,
+                    spreadRadius: 0,
                     blurRadius: 3,
                     offset: Offset(0, 2),
                   ),
@@ -55,7 +55,7 @@ class MachineItem extends StatelessWidget {
           // 设置状态部分
           if (status != "")
             Container(
-              width: 110,
+              width: width,
               height: 30,
               decoration: BoxDecoration(
                 color: containerColor,

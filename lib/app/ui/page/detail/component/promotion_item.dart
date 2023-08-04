@@ -20,11 +20,12 @@ class PromotionItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(),
       child: Container(
+        margin: EdgeInsets.all(2.0),
         decoration: decoration,
         width: width,
         height: height,
         alignment: Alignment.center,
-        padding: const EdgeInsets.all(10.0),
+       // padding: const EdgeInsets.all(1.0),
         child:  Text(
           title,
           textAlign: TextAlign.center,

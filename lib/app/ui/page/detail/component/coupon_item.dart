@@ -9,7 +9,9 @@ class CouponItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+
+    return Expanded(
+      child: Padding(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 2),
       child: Container(
         width: 402,
@@ -85,6 +87,7 @@ class CouponItem extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }
