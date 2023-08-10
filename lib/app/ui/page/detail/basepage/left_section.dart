@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:test_app/app/ui/page/detail/component/coupon_item.dart';
-import 'package:test_app/app/ui/page/detail/controller/left_section_controller.dart';
+import 'package:test_app/app/ui/page/detail/controller/subtotal2_controller.dart';
 
 class SubTabWidget extends StatelessWidget {
-  final controller = Get.put(LeftSectionController());
+  final controller = Get.put(SubtotalController());
 
   SubTabWidget({super.key});
 
@@ -12,7 +12,7 @@ class SubTabWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        margin: EdgeInsets.only(top: 80, right: 18),
+        margin: EdgeInsets.only(top: 50, right: 18),
         alignment: Alignment.centerRight,
         width: 144,
         height: 50,
@@ -53,7 +53,7 @@ class SubTabWidget extends StatelessWidget {
 }
 
 class LeftSection extends StatelessWidget {
-  final controller = Get.put(LeftSectionController());
+  final controller = Get.put(SubtotalController());
   final ScrollController _controller = ScrollController();
 
   Widget build(BuildContext context) {
@@ -73,15 +73,16 @@ class LeftSection extends StatelessWidget {
                       direction: Axis.horizontal, // 设置方向为水平
                       mainAxisAlignment: MainAxisAlignment.end, // 从右到左排列
                       children: [
-                        Text(
+                        const Text(
                           '値引き合計',
                           style: TextStyle(
                             color: Color(0xffC1371E),
                             fontSize: 18,
                           ),
                         ),
+                        SizedBox(width: 15),
                         Text(
-                          controller.discountAmount.value,
+                          '${controller.discountAmount.value}',
                           style: TextStyle(
                             color: Color(0xffC1371E),
                             fontSize: 28,
@@ -106,7 +107,7 @@ class LeftSection extends StatelessWidget {
                           fontSize: 22,
                         ),
                       ),
-                      // SizedBox(height: 20),
+                       SizedBox(height: 15),
                       Flex(
                         direction: Axis.horizontal,
                         children: [
@@ -116,7 +117,7 @@ class LeftSection extends StatelessWidget {
                               child: Text(
                                 '${controller.totalItems.value} 点',
                                 style: TextStyle(
-                                  color: Color(0xFF45494E),
+                                  color: Color.fromRGBO(69, 73, 78, 1),
                                   fontSize: 28,
                                 ),
                               ),
@@ -130,10 +131,10 @@ class LeftSection extends StatelessWidget {
                                 child: Text(
                                   '${controller.totalAmount.value}',
                                   style: TextStyle(
-                                    color: Color(0xFF45494E),
+                                    color: Color.fromRGBO(69, 73, 78, 1),
                                     fontSize: 34,
                                   ),
-                                //  textAlign: TextAlign.right,
+                                  //  textAlign: TextAlign.right,
                                 ),
                               ),
                             ),
@@ -152,12 +153,13 @@ class LeftSection extends StatelessWidget {
 
               SizedBox(height: 15.0),
               Obx(
-                () => Flex(
-                  direction: Axis.horizontal,
-                  children: [
-                    const Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 20), // 左边距为20
+                () => Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  // 同时设置左右边距为20
+                  child: Flex(
+                    direction: Axis.horizontal,
+                    children: [
+                      const Expanded(
                         child: Text(
                           'お預かり金額',
                           style: TextStyle(
@@ -166,12 +168,9 @@ class LeftSection extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 20), // 右边距为20
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.centerRight,
                           child: Text(
                             '${controller.receivedAmount.value}',
                             style: TextStyle(
@@ -181,29 +180,31 @@ class LeftSection extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-              // SizedBox(height: 15.0),
+
+               SizedBox(height: 15.0),
               Obx(
                 () => Container(
                   color: Color(0xffFFE8E5),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
                   width: double.infinity,
-                  height: 90,
                   child: Flex(
                     direction: Axis.horizontal,
+                    mainAxisSize: MainAxisSize.min, // 使Flex适应其子项
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Padding(
-                          padding:
-                              EdgeInsets.only(top: 40, left: 20, bottom: 20),
+                          padding: const EdgeInsets.only(
+                              top: 40, bottom: 20), // 将上下边距应用于文本
                           child: Text(
                             '不足',
                             style: TextStyle(
                               color: Color.fromRGBO(193, 55, 30, 1),
                               fontSize: 22,
-                             // fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -213,12 +214,13 @@ class LeftSection extends StatelessWidget {
                           alignment: Alignment.centerRight,
                           child: Padding(
                             padding: const EdgeInsets.only(
-                                right: 20, top: 20, bottom: 15),
+                                top: 20, bottom: 15), // 将上下边距应用于文本
                             child: Text(
                               '${controller.insufficientAmount.value}',
                               style: const TextStyle(
-                                  color: Color.fromRGBO(193, 55, 30, 1),
-                                  fontSize: 44),
+                                color: Color.fromRGBO(193, 55, 30, 1),
+                                fontSize: 44,
+                              ),
                             ),
                           ),
                         ),
@@ -227,17 +229,16 @@ class LeftSection extends StatelessWidget {
                   ),
                 ),
               ),
+
               SizedBox(height: 15.0),
 
               ///品券
               ScrollbarTheme(
                 data: ScrollbarThemeData(
-                  thickness:
-                      MaterialStateProperty.resolveWith((states) => 20.0),
-                  // 调整粗细
+                  thickness: MaterialStateProperty.all(20.0), // 粗细
                   crossAxisMargin: 5.0, // 调整左右间距
                   mainAxisMargin: 0.5,
-                  isAlwaysShown: true,
+                  thumbVisibility: MaterialStateProperty.all(true),
                 ),
                 child: Expanded(
                   child: Container(
@@ -253,7 +254,6 @@ class LeftSection extends StatelessWidget {
                             amount: controller.coupons[index]['amount'] ?? '',
                             count: controller.coupons[index]['count'] ?? '',
                           ),
-
                         ),
                       ),
                     ),

@@ -25,8 +25,8 @@ class MachineItem extends StatelessWidget {
     double opacity = (status == '使用中' || status == '休止中') ? 0.4 : 1.0;
 
     return Container(
-      width: width,
-      height: height,
+      width: 110,
+      height: 110,
       margin: const EdgeInsets.all(5.0),
       child: Stack(
         children: [

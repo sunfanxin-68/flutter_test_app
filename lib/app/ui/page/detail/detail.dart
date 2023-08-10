@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:test_app/app/ui/page/detail/basepage/left_section.dart';
 import 'package:test_app/app/ui/page/detail/basepage/right_section.dart';
 
+import 'basepage/top_section.dart';
+
 class SubtotalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double availableHeight = MediaQuery.of(context).size.height;
+   // double availableHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Color(0xFFDCDCDC),
@@ -16,6 +18,7 @@ class SubtotalPage extends StatelessWidget {
             direction: Axis.vertical,
             children: <Widget>[
               SizedBox(height: 20.0),
+              createHeader(context),
               Expanded( // 使用Expanded来占据可用空间
                 child: Flex(
                   direction: Axis.horizontal,
@@ -56,4 +59,11 @@ class SubtotalPage extends StatelessWidget {
       ),
     );
   }
+
+  Widget createHeader(BuildContext context) {
+    return Container(
+      child: TopSection(),
+    );
+  }
 }
+
