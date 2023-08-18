@@ -15,13 +15,17 @@ class _DiscountSectionState extends State<DiscountSection> {
   TextEditingController textEditingController = TextEditingController();
   bool isKeyboardVisible = false;
 
-  String? currentDiscountValue1;
+  String? currentDiscountValue1; // 实际应用的折扣值
+  String? currentDiscountValueTemp; // 临时选中的折扣值，等待确认
+
+  String? keyboardDiscountValue1; // 实际应用的数字键盘
+  String? keyboardDiscountValueTemp; // 临时选中的数字键盘值，等待确认
 
   // 这是一个布尔值，用于确定是否显示确认按钮。
   bool showConfirmButton = false;
 
   // 以下两个是用于监听输入框聚焦状态的 FocusNode。
-  FocusNode focusNode1 = FocusNode();
+  // FocusNode focusNode1 = FocusNode();
   FocusNode focusNode2 = FocusNode();
 
   // 定义输入框的初始边框和背景颜色。
@@ -32,18 +36,18 @@ class _DiscountSectionState extends State<DiscountSection> {
   void initState() {
     super.initState();
     // 为 _focusNode1 添加监听器。
-    focusNode1.addListener(() {
-      setState(() {
-        // 如果 _focusNode1 有焦点，将 borderColor1 和 boxColor1 设置为聚焦颜色，否则设置为默认颜色。
-        // 通过三元运算符，如果 _focusNode1 有焦点，则选择聚焦颜色，否则选择默认颜色。
-        discountBorderColor = focusNode1.hasFocus
-            ? Color.fromRGBO(55, 75, 186, 1)
-            : Color.fromRGBO(152, 162, 173, 1);
-        discountBoxColor = focusNode1.hasFocus
-            ? Color.fromRGBO(239, 245, 247, 1)
-            : Colors.white;
-      });
-    });
+    // focusNode1.addListener(() {
+    //   setState(() {
+    //     // 如果 _focusNode1 有焦点，将 borderColor1 和 boxColor1 设置为聚焦颜色，否则设置为默认颜色。
+    //     // 通过三元运算符，如果 _focusNode1 有焦点，则选择聚焦颜色，否则选择默认颜色。
+    //     discountBorderColor = focusNode1.hasFocus
+    //         ? Color.fromRGBO(55, 75, 186, 1)
+    //         : Color.fromRGBO(152, 162, 173, 1);
+    //     discountBoxColor = focusNode1.hasFocus
+    //         ? Color.fromRGBO(239, 245, 247, 1)
+    //         : Colors.white;
+    //   });
+    // });
     focusNode2.addListener(() {
       if (focusNode2.hasFocus) {
         // 焦点在输入框上时显示自定义键盘
@@ -60,11 +64,22 @@ class _DiscountSectionState extends State<DiscountSection> {
     });
   }
 
+  void onDropdownChanged(String? value) {
+    setState(() {
+      currentDiscountValueTemp = value;
+      showConfirmButton = true;
+    });
+  }
+
   void handleKeyTap(String key) {
     controller.onKeyTap(key, focusNode2);
+    controller.keyboardAmount.value = controller.formatAmountForOutside(
+        int.parse(controller.textEditingController.text));
+
     // 只有在点击 "✔️" 时才隐藏键盘
     if (key == "✔️") {
       isKeyboardVisible = false;
+      showConfirmButton = true; // 在点击✔️时设置showConfirmButton为true以显示确定按钮
       setState(() {});
     }
   }
@@ -111,7 +126,7 @@ class _DiscountSectionState extends State<DiscountSection> {
                             ), // 您可以替换为真实的标题
                             SizedBox(width: 20),
                             Text(
-                              '${controller.discountAmount.value}',
+                              '${controller.totalAmount.value}',
                               style: TextStyle(
                                 color: Color.fromRGBO(193, 55, 30, 1),
                                 fontSize: 28,
@@ -177,12 +192,7 @@ class _DiscountSectionState extends State<DiscountSection> {
                     SizedBox(height: 10), // 为文本和下拉菜单之间添加间距
                     DiscountDropdown(
                       discountValues: controller.discountValues,
-                      onChanged: (value) {
-                        setState(() {
-                          currentDiscountValue1 = value;
-                          showConfirmButton = true;
-                        });
-                      },
+                      onChanged: onDropdownChanged,
                     ),
                   ],
                 ),
@@ -273,7 +283,31 @@ class _DiscountSectionState extends State<DiscountSection> {
                       shadowColor: MaterialStateProperty.all(
                           Color.fromRGBO(69, 73, 78, 0.35)), // 设置阴影颜色
                     ),
-                    onPressed: () => controller.discountSave(context),
+                    onPressed: () {
+                      try {
+                        print("確定 button pressed");
+                        setState(() {
+                          currentDiscountValue1 = currentDiscountValueTemp ??
+                              "0"; // 如果是null，使用默认值"0"
+                          controller.selectedDiscount.value =
+                              currentDiscountValue1!;
+
+                          if (keyboardDiscountValueTemp != null) {
+                            // 检查值是否非空
+                            keyboardDiscountValue1 = keyboardDiscountValueTemp;
+                            controller.keyboardAmount.value =
+                                controller.formatAmountForOutside(
+                                    int.parse(keyboardDiscountValue1!));
+                          }
+                        });
+
+                        controller.triggerDiscountCalculation();
+                      } catch (e) {
+                        print('Error occurred: $e');
+                      }
+                    },
+
+                    // 计算折扣和金额
                     // 按钮的点击事件处理
                     child: Ink(
                       decoration: BoxDecoration(

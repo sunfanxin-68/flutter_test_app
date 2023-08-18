@@ -10,20 +10,31 @@ String _formatAmount(int amount, [bool isCurrency = true]) {
       : '${formatter.format(amount)}'; // 通貨記号なし
 }
 
+int parseAmount(String amountString) {
+  print("Original String: $amountString"); // 打印原始的字符串
+  // 替换非数字字符
+  String cleanString = amountString.replaceAll('￥', '').replaceAll(',', '');
+  print("Cleaned String: $cleanString"); // 打印经过清洁处理的字符串
+  int parsedInt = int.parse(cleanString);
+  print("Parsed Integer: $parsedInt"); // 打印解析后的整数
+  return int.parse(cleanString);
+}
+
 class SubtotalController extends GetxController {
-
-
+  var selectedDiscount = ''.obs; // 折扣率，默认为1表示无折扣
+  var keyboardAmount = ''.obs; // 从数字键盘获取的金额
+  var discountAmount = ''.obs; // 割引額
   var registerNumber = "".obs; // 登録番号
-  var discountAmount = "".obs; // 割引額
   var totalItems = "".obs; // 商品の合計数
   var totalAmount = "".obs; // 合計金額
   var receivedAmount = "".obs; // 受け取った金額
   var insufficientAmount = "".obs; // 不足金額
+  var totalDiscount = "".obs; //値引き合計額
 
   // クーポンリストの生成
   var coupons = List<Map<String, String>>.generate(
     10,
-        (index) => {
+    (index) => {
       'title': '品券${index + 1}',
       'amount': '￥10,000',
       'count': '${111 - index}枚',
@@ -33,14 +44,98 @@ class SubtotalController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    discountAmount.value = _formatAmount(-1111111); // 割引額の初期化
+    discountAmount.value = _formatAmount(1111111); // 割引額の初期化
+    totalDiscount.value = _formatAmount(0); //値引き合計額の初期化
     totalItems.value = _formatAmount(1111111, false); // 商品の合計数の初期化
     totalAmount.value = _formatAmount(1111111); // 合計金額の初期化
     receivedAmount.value = _formatAmount(1111111); // 受け取った金額の初期化
     insufficientAmount.value = _formatAmount(1111111); // 不足金額の初期化
     registerNumber.value = "1"; // 登録番号の初期化
+    selectedDiscount.value = _formatAmount(1); // 折扣率，默认为1表示无折扣
+    keyboardAmount.value = _formatAmount(1111111); // 从数字键盘获取的金额
 
     // fetchCoupons(); // 初期化時にクーポンを取得
+  }
+
+  // 设置折扣率并重新计算折后金额
+  void setDiscountRate(double rate) {
+    // 更新selectedDiscount的值为传入的rate
+    selectedDiscount.value = rate.toString();
+
+    // 使用新的折扣率重新计算折后金额
+    calculateDiscountAmount();
+  }
+
+// 设置从数字键盘输入的金额并重新计算折后金额
+  void setKeyboardAmount(double amount) {
+    // 更新keyboardAmount的值为传入的amount
+    keyboardAmount.value = amount.toString();
+
+    // 使用新的输入金额重新计算折后金额
+    calculateDiscountAmount();
+  }
+
+  // 割引値リスト
+  final List<String> discountValues = [
+    '10%',
+    '20%',
+    '30%',
+    '40%',
+    '50%',
+  ];
+
+  int parseDiscount(String discountStr) {
+    String cleanString = discountStr
+        .replaceAll('%', '')
+        .replaceAll('￥', '')
+        .replaceAll(',', '')
+        .trim();
+    print("打印原始的字符串: $discountStr"); // 打印原始的字符串
+    print("打印经过清洁处理的字符串: $cleanString"); // 打印经过清洁处理的字符串
+    return int.parse(cleanString);
+  }
+
+// 计算折后金额
+  void calculateDiscountAmount() {
+    // 使用parseAmount方法转换字符串为整数
+    int totalAmountInt = parseAmount(totalAmount.value);
+    int selectedDiscountInt = parseDiscount(selectedDiscount.value);
+    int keyboardAmountInt = parseAmount(keyboardAmount.value);
+
+    // 计算discountedAmount
+    double discountFactor = 1 - (selectedDiscountInt / 100.0);
+    int finalAmount = (totalAmountInt * discountFactor).toInt(); // 这就是经过折扣后的最终金额
+
+    // 考虑键盘输入金额
+    finalAmount = finalAmount - keyboardAmountInt;
+
+    // 计算总的折扣金额
+    int totalDiscountValue = totalAmountInt - finalAmount;
+
+    // 更新observable值
+    totalDiscount.value = _formatAmount(totalDiscountValue);
+    discountAmount.value = _formatAmount(finalAmount);
+
+    print("Total Amount: $totalAmountInt");
+    print("Discount: $selectedDiscountInt%");
+    print("Discount Factor: $discountFactor");
+    print("Discounted Amount (Final Amount before keyboard input): $finalAmount");
+    print("keyboardAmount: $keyboardAmountInt");
+    print("Total Discount: $totalDiscountValue");
+  }
+
+
+
+
+  //您可以在SubtotalController中定义一个新的公共方法，该方法内部调用_formatAmount。
+  String formatAmountForOutside(int amount,
+      [bool includeCurrencySymbol = true]) {
+    return _formatAmount(amount, includeCurrencySymbol);
+  }
+
+  // 在 SubtotalController 控制器内添加一个触发金额计算的方法：
+  void triggerDiscountCalculation() {
+    calculateDiscountAmount();
   }
 
   // プロモーションリスト
@@ -86,32 +181,13 @@ class SubtotalController extends GetxController {
     showDiscountSection.value = !showDiscountSection.value; // 割引セクションの表示を切り替え
   }
 
-  // 割引値リスト
-  final List<String> discountValues = [
-    '  ',
-    '10%',
-    '20%',
-    '30%',
-    '40%',
-    '50%',
-  ];
-
-  // 割引保存のダイアログ
-  void discountSave(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('確定ボタンです'), // 確定ボタンのダイアログ
-      ),
-    );
-  }
-
   // テキスト入力コントローラ
   final TextEditingController textEditingController = TextEditingController();
 
   // キーボードの表示
 
   bool isKeyboardVisible = false;
+
   // 在这个方法中切换键盘的可见性
   void toggleKeyboard() {
     isKeyboardVisible = !isKeyboardVisible;
@@ -119,12 +195,11 @@ class SubtotalController extends GetxController {
   }
 
   void onKeyTap(String key, FocusNode focusNode2) {
-
     if (key == "X") {
       // 如果点击的是 "x" 键，则删除输入框的最后一个字符
       if (textEditingController.text.isNotEmpty) {
-        textEditingController.text = textEditingController.text.substring(0,
-            textEditingController.text.length - 1);
+        textEditingController.text = textEditingController.text
+            .substring(0, textEditingController.text.length - 1);
       }
     } else if (key == "✔️") {
       toggleKeyboard();
@@ -141,5 +216,4 @@ class SubtotalController extends GetxController {
     textEditingController.selection =
         TextSelection.collapsed(offset: textEditingController.text.length);
   }
-
 }

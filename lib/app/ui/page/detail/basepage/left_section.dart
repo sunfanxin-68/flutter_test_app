@@ -82,7 +82,7 @@ class LeftSection extends StatelessWidget {
                         ),
                         SizedBox(width: 15),
                         Text(
-                          '${controller.discountAmount.value}',
+                          '-${controller.totalDiscount.value}',
                           style: TextStyle(
                             color: Color(0xffC1371E),
                             fontSize: 28,
